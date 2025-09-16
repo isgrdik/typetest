@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>コーチング流タイプ分け診断</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .progress-bar {
+            transition: width 0.3s ease-in-out;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .result-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+        }
+        .question-card {
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-8 fade-in">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">コーチング流タイプ分け診断</h1>
+            <p class="text-gray-600 text-lg font-medium">あなたのタイプを診断します</p>
+        </header>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                <div class="mb-6">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">診断を開始しましょう</h2>
+                    <p class="text-gray-600 mb-6">20個の質問に答えることで、あなたのタイプを診断します。<br>各質問に対して、最も当てはまる選択肢を選んでください。<br>「こうありたい」ではなく、実際どうなのかを基準に選択してください。</p>
+                </div>
+                <button id="start-btn" class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 hover:from-blue-700 hover:via-purple-700 hover:to-pink-600 text-white font-bold text-xl py-4 px-12 rounded-xl transition duration-300 transform hover:scale-105 shadow-lg">
+                    診断を開始する
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="progress-container" class="hidden mb-8">
+            <div class="bg-white rounded-lg p-4 shadow-md">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">進捗</span>
+                    <span id="progress-text" class="text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">1 / 20</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div id="progress-bar" class="progress-bar bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-3 rounded-full" style="width: 5%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question Screen -->
+        <div id="question-screen" class="hidden">
+            <div class="question-card bg-white rounded-xl shadow-lg p-8">
+                <h3 id="question-text" class="text-xl font-semibold text-gray-800 mb-6"></h3>
+                <div id="answer-options" class="space-y-3">
+                    <!-- Answer options will be populated here -->
+                </div>
+                <div class="mt-8">
+                    <button id="prev-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold py-2 px-6 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        戻る
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="result-card text-white p-8 text-center">
+                    <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-3xl font-bold mb-2">診断結果</h2>
+                    <p id="result-type" class="text-4xl font-bold mb-4"></p>
+                </div>
+                
+                <div class="p-8">
+                    <div id="result-description" class="text-gray-700 mb-8">
+                        <!-- Result description will be populated here -->
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">詳細スコア</h4>
+                        <div id="score-details" class="grid grid-cols-2 gap-4">
+                            <!-- Score details will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button id="restart-btn" class="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 hover:from-blue-700 hover:via-purple-700 hover:to-pink-600 text-white font-bold py-3 px-8 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg">
+                            もう一度診断する
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 質問データ
+        const questions = [
+            { id: 1, text: "自己主張することが下手だと思う", type: "A" },
+            { id: 2, text: "常に未来に対して情熱を持っているほうだ", type: "P" },
+            { id: 3, text: "他人のためにしたことを感謝されないと悔しく思うことがよくある", type: "S" },
+            { id: 4, text: "いやなことはいやと、はっきり言える", type: "C" },
+            { id: 5, text: "人にはなかなか気を許さない", type: "A" },
+            { id: 6, text: "人から楽しい人とよく言われる", type: "P" },
+            { id: 7, text: "短い時間にできるだけ多くのことをしようとする", type: "C" },
+            { id: 8, text: "失敗しても立ち直りが早い", type: "P" },
+            { id: 9, text: "人からものを頼まれるとなかなかノーと言えない", type: "S" },
+            { id: 10, text: "たくさんの情報を検討してから決断を下す", type: "A" },
+            { id: 11, text: "人の話を聞くことよりも自分が話していることのほうが多い", type: "P" },
+            { id: 12, text: "どちらかというと人見知りするほうだ", type: "A" },
+            { id: 13, text: "自分を他人とよく比較する", type: "S" },
+            { id: 14, text: "変化に強く適応力がある", type: "P" },
+            { id: 15, text: "何事も自分の感情を表現することが苦手だ", type: "A" },
+            { id: 16, text: "相手の好き嫌いにかかわらず、人の世話をしてしまうほうだ", type: "S" },
+            { id: 17, text: "自分が思ったことはストレートに言う", type: "C" },
+            { id: 18, text: "仕事のできばえについて人から認められたい", type: "S" },
+            { id: 19, text: "競争心が強い", type: "C" },
+            { id: 20, text: "何事も完全にしないと気がすまない", type: "C" }
+        ];
+
+        // 回答選択肢
+        const answerChoices = [
+            { text: "よくあてはまる", value: 1 },
+            { text: "あてはまる", value: 2 },
+            { text: "あてはまらない", value: 3 },
+            { text: "全然あてはまらない", value: 4 }
+        ];
+
+        // タイプ説明
+        const typeDescriptions = {
+            C: {
+                name: "コントローラー",
+                description: "あなたはリーダーシップに優れ、決断力があるタイプです。目標達成に向けて積極的に行動し、困難な状況でも冷静に判断することができます。チームを引っ張っていく力があり、責任感も強い特徴があります。",
+                traits: ["リーダーシップがある", "決断力に優れる", "目標志向", "責任感が強い", "積極的"]
+            },
+            P: {
+                name: "プロモーター",
+                description: "あなたは社交的で積極的なタイプです。人とのつながりを大切にし、チームの雰囲気を明るくする力があります。新しいアイデアや変化を受け入れることが得意で、周囲を巻き込んで物事を進めることができます。",
+                traits: ["社交的", "積極的", "人とのつながりを重視", "適応力がある", "エネルギッシュ"]
+            },
+            S: {
+                name: "サポーター",
+                description: "あなたは協調性があり、安定を好むタイプです。チームワークを大切にし、他者をサポートすることに喜びを感じます。忍耐強く、信頼できる人として周囲から頼られることが多い特徴があります。",
+                traits: ["協調性がある", "安定志向", "サポート力がある", "忍耐強い", "信頼できる"]
+            },
+            A: {
+                name: "アナライザー",
+                description: "あなたは分析的で慎重なタイプです。品質や正確性を重視し、物事を深く考えてから行動します。詳細に注意を払い、論理的な思考で問題解決に取り組むことが得意です。",
+                traits: ["分析的", "慎重", "品質重視", "論理的思考", "詳細志向"]
+            }
+        };
+
+        // 状態管理
+        let currentQuestion = 0;
+        let answers = {};
+        let isTransitioning = false;
+        
+        // DOM要素
+        const startScreen = document.getElementById('start-screen');
+        const questionScreen = document.getElementById('question-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const questionText = document.getElementById('question-text');
+        const answerOptions = document.getElementById('answer-options');
+        const prevBtn = document.getElementById('prev-btn');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // イベントリスナー
+        startBtn.addEventListener('click', startTest);
+        prevBtn.addEventListener('click', previousQuestion);
+        restartBtn.addEventListener('click', restartTest);
+
+        function startTest() {
+            startScreen.classList.add('hidden');
+            progressContainer.classList.remove('hidden');
+            questionScreen.classList.remove('hidden');
+            currentQuestion = 0;
+            answers = {};
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestion];
+            questionText.textContent = question.text;
+            
+            // 回答選択肢を生成
+            answerOptions.innerHTML = '';
+            answerChoices.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center p-3 border rounded-lg cursor-pointer transition-all duration-200 hover:bg-blue-50 hover:border-blue-300';
+                
+                const isSelected = answers[question.id] === option.value;
+                if (isSelected) {
+                    div.className += ' bg-gradient-to-r from-blue-50 to-purple-50 border-blue-400';
+                }
+                
+                div.innerHTML = `
+                    <input type="radio" id="option-${index}" name="answer" value="${option.value}" class="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500" ${isSelected ? 'checked' : ''}>
+                    <label for="option-${index}" class="ml-3 text-gray-700 cursor-pointer flex-1">${option.text}</label>
+                `;
+                
+                div.addEventListener('click', () => selectAnswer(option.value, question.id));
+                answerOptions.appendChild(div);
+            });
+            
+            // プログレスバー更新
+            updateProgress();
+            
+            // ボタン状態更新
+            updateButtons();
+        }
+
+        function selectAnswer(value, questionId) {
+            // 遷移中なら処理しない
+            if (isTransitioning) {
+                return;
+            }
+            
+            answers[questionId] = value;
+            isTransitioning = true;
+            
+            // 選択状態を更新
+            displayQuestion();
+            
+            // 少し遅延してから次の質問に進む（ユーザーが選択を確認できるように）
+            setTimeout(() => {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    displayQuestion();
+                } else {
+                    showResult();
+                }
+                isTransitioning = false;
+            }, 300);
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${currentQuestion + 1} / ${questions.length}`;
+        }
+
+        function updateButtons() {
+            prevBtn.disabled = currentQuestion === 0;
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0 && !isTransitioning) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function calculateResult() {
+            // 各タイプのスコア計算
+            const scores = { C: 0, P: 0, S: 0, A: 0 };
+            
+            questions.forEach(question => {
+                const answer = answers[question.id];
+                scores[question.type] += answer;
+            });
+
+            // 調整計算
+            const adjustedScores = {
+                C: 11 - scores.C,
+                P: 12 - scores.P,
+                S: 12 - scores.S,
+                A: 13 - scores.A
+            };
+
+            // 最大値のタイプを特定
+            const maxScore = Math.max(...Object.values(adjustedScores));
+            const resultTypes = Object.keys(adjustedScores).filter(type => adjustedScores[type] === maxScore);
+
+            return {
+                scores,
+                adjustedScores,
+                resultTypes,
+                primaryType: resultTypes[0]
+            };
+        }
+
+        function showResult() {
+            questionScreen.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            const result = calculateResult();
+            const primaryType = result.primaryType;
+            const typeInfo = typeDescriptions[primaryType];
+            
+            // 結果表示
+            document.getElementById('result-type').textContent = `「${typeInfo.name}」`;
+            
+            // 説明文は空にする
+            document.getElementById('result-description').innerHTML = '';
+            
+            // スコア詳細表示
+            const scoreDetails = document.getElementById('score-details');
+            scoreDetails.innerHTML = '';
+            
+            Object.keys(result.adjustedScores).forEach(type => {
+                const div = document.createElement('div');
+                div.className = 'text-center';
+                div.innerHTML = `
+                    <div class="font-semibold text-gray-800">${typeDescriptions[type].name}</div>
+                    <div class="text-lg font-medium ${type === primaryType ? 'bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent' : 'text-gray-500'}">
+                        ${result.adjustedScores[type]}点
+                    </div>
+                `;
+                scoreDetails.appendChild(div);
+            });
+        }
+
+        function restartTest() {
+            resultScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+            currentQuestion = 0;
+            answers = {};
+            isTransitioning = false;
+        }
+    </script>
+</body>
+</html>
