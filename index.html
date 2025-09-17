@@ -287,12 +287,12 @@
                 scores[question.type] += answer;
             });
 
-            // 調整計算
+            // 調整計算（元の重み付けを保持し、下限を0にする）
             const adjustedScores = {
-                C: 11 - scores.C,
-                P: 12 - scores.P,
-                S: 12 - scores.S,
-                A: 13 - scores.A
+                C: (11 - scores.C) + 9,  // 0〜15点
+                P: (12 - scores.P) + 9,  // 1〜16点
+                S: (12 - scores.S) + 9,  // 1〜16点
+                A: (13 - scores.A) + 9   // 2〜17点
             };
 
             // 最大値のタイプを特定
